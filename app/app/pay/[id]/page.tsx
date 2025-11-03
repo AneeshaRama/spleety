@@ -25,9 +25,14 @@ export default function PayPage() {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const paymentLink = typeof window !== 'undefined' ? window.location.href : '';
   const isCreator = publicKey && creatorParam && publicKey.toString() === creatorParam;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Fetch expense data from blockchain
   useEffect(() => {
@@ -244,24 +249,28 @@ export default function PayPage() {
               </a>
             )}
           </div>
-          <WalletMultiButton className="!bg-[#0f0f1e] !border-4 !border-[#00ffff] !text-[#00ffff] hover:!bg-[#1a1a2e] !font-['Press_Start_2P'] !text-xs !px-4 !py-3 !rounded-none !shadow-[4px_4px_0px_0px_rgba(0,255,255,1)] hover:!shadow-[6px_6px_0px_0px_rgba(0,255,255,1)] hover:!translate-x-[-2px] hover:!translate-y-[-2px] !transition-all" />
+          {mounted && (
+            <WalletMultiButton className="!bg-[#0f0f1e] !border-4 !border-[#00ffff] !text-[#00ffff] hover:!bg-[#1a1a2e] !font-['Press_Start_2P'] !text-xs !px-4 !py-3 !rounded-none !shadow-[4px_4px_0px_0px_rgba(0,255,255,1)] hover:!shadow-[6px_6px_0px_0px_rgba(0,255,255,1)] hover:!translate-x-[-2px] hover:!translate-y-[-2px] !transition-all" />
+          )}
         </div>
       </div>
 
       {/* Stars Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="star"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-            }}
-          />
-        ))}
-      </div>
+      {mounted && (
+        <div className="fixed inset-0 pointer-events-none">
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="star"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-2xl">

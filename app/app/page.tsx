@@ -2,7 +2,7 @@
 
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Toast from "@/components/Toast";
 import ExpenseSidebar from "@/components/ExpenseSidebar";
@@ -21,6 +21,11 @@ export default function Home() {
   } | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showInfoTooltip, setShowInfoTooltip] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleCreateExpense = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,23 +111,27 @@ export default function Home() {
 
       {/* Top Navigation Bar */}
       <div className="fixed top-0 right-0 z-50 p-6">
-        <WalletMultiButton className="!bg-[#0f0f1e] !border-4 !border-[#00ffff] !text-[#00ffff] hover:!bg-[#1a1a2e] !font-['Press_Start_2P'] !text-xs !px-4 !py-3 !rounded-none !shadow-[4px_4px_0px_0px_rgba(0,255,255,1)] hover:!shadow-[6px_6px_0px_0px_rgba(0,255,255,1)] hover:!translate-x-[-2px] hover:!translate-y-[-2px] !transition-all" />
+        {mounted && (
+          <WalletMultiButton className="!bg-[#0f0f1e] !border-4 !border-[#00ffff] !text-[#00ffff] hover:!bg-[#1a1a2e] !font-['Press_Start_2P'] !text-xs !px-4 !py-3 !rounded-none !shadow-[4px_4px_0px_0px_rgba(0,255,255,1)] hover:!shadow-[6px_6px_0px_0px_rgba(0,255,255,1)] hover:!translate-x-[-2px] hover:!translate-y-[-2px] !transition-all" />
+        )}
       </div>
 
       {/* Pixel Stars Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="star"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-            }}
-          />
-        ))}
-      </div>
+      {mounted && (
+        <div className="fixed inset-0 pointer-events-none">
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="star"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-2xl">

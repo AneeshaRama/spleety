@@ -32,7 +32,7 @@ export default function Toast({ message, type, onClose, duration = 5000 }: Toast
 
   return (
     <div
-      className={`fixed top-8 right-8 z-50 min-w-[300px] max-w-[500px] pixel-card ${typeStyles[type]} animate-slide-in`}
+      className={`fixed bottom-8 right-8 z-50 min-w-[300px] max-w-[500px] pixel-card ${typeStyles[type]} animate-slide-in`}
       style={{
         animation: 'slideInRight 0.3s ease-out',
       }}

@@ -26,7 +26,7 @@ pub mod spleety {
         expense_group.total_amount_usd = total_amount_usd;
         expense_group.participant_count = participant_count;
         expense_group.amount_per_person_usd = total_amount_usd / participant_count as u64;
-        expense_group.paid_count = 0;
+        expense_group.paid_count = 1;
         expense_group.settled = false;
         expense_group.created_at = Clock::get()?.unix_timestamp;
         expense_group.bump = ctx.bumps.expense_group;
@@ -101,8 +101,6 @@ pub mod spleety {
     pub fn settle(ctx: Context<Settle>) -> Result<()> {
         let expense_group = &mut ctx.accounts.expense_group;
 
-        require!(!expense_group.settled, ErrorCode::AlreadySettled);
-
         let total_lamports = expense_group.to_account_info().lamports();
         let rent_exempt = Rent::get()?.minimum_balance(expense_group.to_account_info().data_len());
         let withdrawable_amount = total_lamports.saturating_sub(rent_exempt);
@@ -112,7 +110,9 @@ pub mod spleety {
         **expense_group.to_account_info().try_borrow_mut_lamports()? -= withdrawable_amount;
         **ctx.accounts.authority.to_account_info().try_borrow_mut_lamports()? += withdrawable_amount;
 
-        expense_group.settled = true;
+        if expense_group.paid_count >= expense_group.participant_count {
+            expense_group.settled = true;
+        }
 
         emit!(ExpenseSettled {
             expense_group: expense_group.key(),

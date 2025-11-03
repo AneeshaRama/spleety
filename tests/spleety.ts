@@ -82,7 +82,7 @@ describe("spleety", () => {
       expenseGroup.amountPerPersonUsd.toString(),
       (totalAmountUsd / participantCount).toString()
     );
-    assert.equal(expenseGroup.paidCount, 0);
+    assert.equal(expenseGroup.paidCount, 1);
     assert.equal(expenseGroup.settled, false);
 
     console.log(`✅ Expense Created:`);
@@ -178,7 +178,7 @@ describe("spleety", () => {
     );
     console.log(`   Actual paid (incl. fees): ~${paidSol.toFixed(4)} SOL`);
     console.log(
-      `   Expense paid count: ${expenseGroupAfter.paidCount}/${expenseGroupAfter.participantCount}`
+      `   Expense paid count: ${expenseGroupAfter.paidCount}/${expenseGroupAfter.participantCount} (including creator)`
     );
 
     assert.isTrue(paidSol > 0, "Participant should have paid some SOL");
@@ -231,20 +231,20 @@ describe("spleety", () => {
       (authorityBalanceAfter - authorityBalanceBefore) / LAMPORTS_PER_SOL;
     const remainingInAccount = expenseGroupLamportsAfter / LAMPORTS_PER_SOL;
 
-    assert.equal(expenseGroupAfter.settled, true);
+    assert.equal(expenseGroupAfter.settled, false);
     assert.isTrue(
       expenseGroupLamportsAfter > 0,
       "Should keep rent-exempt balance"
     );
 
     console.log(`✅ Settlement Complete:`);
-    console.log(`   Settled: ${expenseGroupAfter.settled}`);
+    console.log(`   Settled: ${expenseGroupAfter.settled} (${expenseGroupAfter.paidCount}/${expenseGroupAfter.participantCount} paid including creator)`);
     console.log(`   Authority withdrew: ~${withdrawn.toFixed(4)} SOL`);
     console.log(
       `   Remaining (rent-exempt): ${remainingInAccount.toFixed(6)} SOL`
     );
     console.log(
-      `   Final paid count: ${expenseGroupAfter.paidCount}/${expenseGroupAfter.participantCount}`
+      `   Final paid count: ${expenseGroupAfter.paidCount}/${expenseGroupAfter.participantCount} (including creator)`
     );
   });
 
@@ -307,7 +307,7 @@ describe("spleety", () => {
     } catch (error: any) {
       const errorMsg = error.error?.errorMessage || error.message;
       console.log(`✅ Correctly rejected: ${errorMsg}`);
-      assert.include(errorMsg, "Expense has already been settled");
+      assert.include(errorMsg, "No funds available to withdraw");
     }
   });
 });

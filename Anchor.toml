@@ -9,13 +9,13 @@ skip-lint = false
 spleety = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
 
 [programs.devnet]
-spleety = "34NJCLuWB7FXCw4St5kpSrbx6tK8gdBW2TG8tpaY8Nwh"
+spleety = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

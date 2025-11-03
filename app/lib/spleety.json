@@ -1,0 +1,475 @@
+{
+  "address": "34NJCLuWB7FXCw4St5kpSrbx6tK8gdBW2TG8tpaY8Nwh",
+  "metadata": {
+    "name": "spleety",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Split payment dApp on Solana"
+  },
+  "instructions": [
+    {
+      "name": "create_expense",
+      "discriminator": [
+        63,
+        19,
+        41,
+        230,
+        40,
+        213,
+        132,
+        147
+      ],
+      "accounts": [
+        {
+          "name": "expense_group",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  120,
+                  112,
+                  101,
+                  110,
+                  115,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "arg",
+                "path": "expense_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_expense_id",
+          "type": "string"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "total_amount_usd",
+          "type": "u64"
+        },
+        {
+          "name": "participant_count",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "join_and_pay",
+      "discriminator": [
+        241,
+        100,
+        168,
+        230,
+        185,
+        143,
+        136,
+        103
+      ],
+      "accounts": [
+        {
+          "name": "expense_group",
+          "writable": true
+        },
+        {
+          "name": "participant_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  114,
+                  116,
+                  105,
+                  99,
+                  105,
+                  112,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "expense_group"
+              },
+              {
+                "kind": "account",
+                "path": "participant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "participant",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "oracle_price_feed",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  105,
+                  99,
+                  101,
+                  95,
+                  102,
+                  101,
+                  101,
+                  100
+                ]
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "oracle_program"
+            }
+          }
+        },
+        {
+          "name": "oracle_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "settle",
+      "discriminator": [
+        175,
+        42,
+        185,
+        87,
+        144,
+        131,
+        102,
+        212
+      ],
+      "accounts": [
+        {
+          "name": "expense_group",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "expense_group"
+          ]
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ExpenseGroup",
+      "discriminator": [
+        126,
+        142,
+        10,
+        132,
+        157,
+        84,
+        19,
+        217
+      ]
+    },
+    {
+      "name": "Participant",
+      "discriminator": [
+        32,
+        142,
+        108,
+        79,
+        247,
+        179,
+        54,
+        6
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "ExpenseCreated",
+      "discriminator": [
+        79,
+        218,
+        230,
+        237,
+        5,
+        12,
+        150,
+        71
+      ]
+    },
+    {
+      "name": "ExpenseSettled",
+      "discriminator": [
+        233,
+        168,
+        41,
+        162,
+        249,
+        236,
+        229,
+        142
+      ]
+    },
+    {
+      "name": "PaymentMade",
+      "discriminator": [
+        227,
+        251,
+        123,
+        16,
+        133,
+        220,
+        83,
+        242
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAmount",
+      "msg": "Amount must be greater than 0"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidParticipantCount",
+      "msg": "Participant count must be between 2 and 10"
+    },
+    {
+      "code": 6002,
+      "name": "TitleTooLong",
+      "msg": "Title cannot exceed 50 characters"
+    },
+    {
+      "code": 6003,
+      "name": "AlreadySettled",
+      "msg": "Expense has already been settled"
+    },
+    {
+      "code": 6004,
+      "name": "AllParticipantsPaid",
+      "msg": "All participants have already paid"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidOraclePrice",
+      "msg": "Invalid oracle price"
+    },
+    {
+      "code": 6006,
+      "name": "NoFundsToWithdraw",
+      "msg": "No funds available to withdraw"
+    }
+  ],
+  "types": [
+    {
+      "name": "ExpenseCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "expense_group",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "total_amount_usd",
+            "type": "u64"
+          },
+          {
+            "name": "participant_count",
+            "type": "u8"
+          },
+          {
+            "name": "amount_per_person_usd",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExpenseGroup",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "total_amount_usd",
+            "type": "u64"
+          },
+          {
+            "name": "participant_count",
+            "type": "u8"
+          },
+          {
+            "name": "amount_per_person_usd",
+            "type": "u64"
+          },
+          {
+            "name": "paid_count",
+            "type": "u8"
+          },
+          {
+            "name": "settled",
+            "type": "bool"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExpenseSettled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "expense_group",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_withdrawn",
+            "type": "u64"
+          },
+          {
+            "name": "paid_count",
+            "type": "u8"
+          },
+          {
+            "name": "total_participants",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Participant",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "expense_group",
+            "type": "pubkey"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "has_paid",
+            "type": "bool"
+          },
+          {
+            "name": "paid_at",
+            "type": "i64"
+          },
+          {
+            "name": "paid_amount_usd",
+            "type": "u64"
+          },
+          {
+            "name": "paid_amount_sol",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PaymentMade",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "expense_group",
+            "type": "pubkey"
+          },
+          {
+            "name": "participant",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_usd",
+            "type": "u64"
+          },
+          {
+            "name": "amount_sol",
+            "type": "u64"
+          },
+          {
+            "name": "sol_price",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

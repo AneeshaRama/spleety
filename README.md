@@ -62,6 +62,7 @@ anchor deploy --provider.cluster devnet
 5. Run frontend
 ```bash
 cd app
+npm install
 npm run dev
 ```
 

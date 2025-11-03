@@ -2,7 +2,7 @@
 
 A decentralized split payments and crypto payroll platform built on Solana. Split bills, track payments, and settle up - all on-chain with full transparency. From expense splitting to payroll management, Spleety handles group payments seamlessly.
 
-## Features
+## v1 Features
 
 - **Equal Splits**: Automatically divide expenses among participants
 - **Real-time Pricing**: SOL/USD conversion using on-chain oracle
